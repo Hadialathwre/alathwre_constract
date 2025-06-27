@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مؤسسة عبدالرقيب علي الاثوري | للمقاولات العامه والعقارات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+     <!-- مكتبة Leaflet للخرائط -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+   <style>
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #f39c12;
+            --accent: #e74c3c;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --radius: 10px;
+        }
+       
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+       
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+       
+        /* Header Styles */
+        header {
+            background-color: rgba(26, 58, 95, 0.95);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+       
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+       
+        .logo-icon {
+            background-color: var(--secondary);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 24px;
+        }
+       
+        .logo-text {
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+       
+        .logo-text span {
+            color: var(--secondary);
+        }
+       
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+       
+        nav ul li {
+            margin: 0 10px;
+        }
+       
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+       
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: var(--secondary);
+            color: var(--primary);
+        }
+       
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+       
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 58, 95, 0.8), rgba(26, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+       
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+       
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+       
+        .hero h1 span {
+            color: var(--secondary);
+        }
+       
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+       
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--primary);
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            margin: 10px;
+            transition: var(--transition);
+            border: 2px solid var(--secondary);
+        }
+       
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--secondary);
+            transform: translateY(-5px);
+        }
+       
+        .cta-button.outline {
+            background-color: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+       
+        .cta-button.outline:hover {
+            background-color: var(--secondary);
+            color: var(--primary);
+        }
+       
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+        }
+       
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+       
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+       
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+       
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+       
+        .about-text {
+            flex: 1;
+        }
+       
+        .about-text h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+       
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+       
+        .about-image {
+            flex: 1;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+       
+        .about-image img {
+            width: 100%;
+            height: auto;
+            transition: var(--transition);
+        }
+       
+        .about-image img:hover {
+            transform: scale(1.05);
+        }
+       
+        /* Services Section */
+        .services {
+            background-color: var(--primary);
+            color: white;
+        }
+       
+        .services .section-title h2 {
+            color: white;
+        }
+       
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+       
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+       
+        .service-card:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-10px);
+        }
+       
+        .service-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+       
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+       
+        /* Previous Works */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+       
+        .project-card {
+            background-color: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+       
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+       
+        .project-image {
+            width: 100%;
+            height: 300px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            overflow: hidden;
+          
+        }
+       
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+       
+        .project-video {
+            width: 100%;
+            height: 500px;
+            
+        }
+       
+        .project-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: black;
+        }
+
+        .project-card:hover  {
+            transform: scale(1.1);
+        }
+       
+        .project-info {
+            padding: 25px;
+        }
+       
+        .project-info h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+       
+        .project-info p {
+            color: var(--gray);
+        }
+       
+        /* Contact Section */
+        .contact {
+            background-color: var(--light);
+        }
+       
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+        }
+       
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+       
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+       
+        .contact-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+       
+        .contact-text h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+       
+        .contact-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+       
+        .form-group {
+            margin-bottom: 20px;
+        }
+       
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+       
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+       
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+       
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+       
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+       
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+       
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+       
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background-color: var(--secondary);
+            bottom: 0;
+            left: 0;
+        }
+       
+        .footer-links {
+            list-style: none;
+        }
+       
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+       
+        .footer-links li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+       
+        .footer-links li a:hover {
+            color: var(--secondary);
+            padding-right: 5px;
+        }
+       
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+       
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+       
+        .social-icons a:hover {
+            background-color: var(--secondary);
+            transform: translateY(-5px);
+        }
+       
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+        }
+       
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+           .scroll-top1 {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: rgb(0, 172, 0);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 99;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+       
+        .scroll-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+       
+        
+        /* الخريطة */
+        .map-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--border-radius);
+        }
+        
+        .map-overlay {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .map-overlay a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+           
+            .about-content {
+                flex-direction: column;
+            }
+        }
+       
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+           
+            nav ul {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: var(--primary);
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: var(--transition);
+            }
+           
+            nav ul.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+           
+            nav ul li {
+                margin: 10px 0;
+            }
+           
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+           
+            .hero p {
+                font-size: 1.2rem;
+            }
+           
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+       
+        @media (max-width: 576px) {
+            .logo-text {
+                font-size: 1rem;
+            }
+           
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+           
+            .cta-button {
+                display: block;
+                margin: 15px auto;
+            }
+        }
+
+                /* تخصيص Leaflet */
+        .leaflet-container {
+            background: #f8f9fa;
+        }
+        
+        .leaflet-control-attribution {
+            font-size: 0.7rem;
+        }
+        
+        .custom-marker {
+            background-color: var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .custom-marker::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 6px 0;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                
+                    <img src="h.png" class="logo-icon">
+                
+                <div class="logo-text">مؤسسة <span>عبدالرقيب علي الاثوري</span></div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">الرئيسية</a></li>
+                    <li><a href="#about">عن الشركة</a></li>
+                    <li><a href="#services">خدماتنا</a></li>
+                    <li><a href="#projects">أعمالنا</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>مؤسسة <span>عبدالرقيب علي الاثوري</span> <br>للمقاولات العامه والعقارات</h1>
+            <p>الريادة في البناء والتطوير العقاري بأعلى معايير الجودة</p>
+            <div class="hero-buttons">
+                <a href="#projects" class="cta-button">أعمالنا السابقة</a>
+                <a href="#contact" class="cta-button outline">تواصل معنا</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>عن مؤسستنا</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>التميز في البناء والتطوير العقاري منذ 1980</h3>
+                    <p>تأسست شركة عبدالرقيب علي الاثوري للمقاولات العامه والعقارات عام 1980، وتمكنت خلال سنوات عملها من بناء سمعة طيبة في مجال الإنشاءات والمقاولات العامة والتطوير العقاري. نلتزم بأعلى معايير الجودة والسلامة في تنفيذ مشاريعنا.</p>
+                    <p>نقدم حلولاً متكاملة في مجال الإنشاءات والمقاولات العامة والإشراف الهندسي، بدءاً من التصميم وحتى التسليم النهائي، مع الحفاظ على الجودة العالية والالتزام بالمواعيد المتفق عليها.</p>
+                    <p>نفتخر بفريق عملنا المتميز من المهندسين و المشرفين والفنيين ذوي الخبرة الواسعة في مختلف مجالات البناء والتشييد، مما يمكننا من تنفيذ المشاريع بكفاءة واحترافية عالية.</p>
+                </div>
+                <div class="about-image">
+                    <img src="ll.png" alt="عن الشركة">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>خدماتنا</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <h3>المقاولات العامة</h3>
+                    <p> - مشاريع البناء والتشييد <br>- مشاريع المياة والصرف الصحي <br> - مشاريع رصف الطرقات<br>- مشاريع السدود والحواجز <br>- ترميم اعادة هيكلة المنشاءات</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-drafting-compass"></i>
+                    </div>
+                    <h3>الإشراف الهندسي</h3>
+                    <p>تقديم خدمات الإشراف الهندسي المتكاملة لضمان تنفيذ المشاريع وفقاً للمواصفات الفنية والتصاميم المعتمدة.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>التطوير العقاري</h3>
+                    <p>تطوير وتنفيذ المشاريع العقارية السكنية والتجارية والاستثمارية بأحدث التصاميم والمواصفات العالمية.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Previous Works Section -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <div class="section-title">
+                <h2>أعمالنا السابقة</h2>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="n.jpg" alt="مشروع ">
+                    </div>
+                    <div class="project-info">
+                        <h3>برج بنك الكريمي - تعز المدينة</h3>
+                        <p>برج بنك الكريمي يتكون من 10 ادوار مع ملحق في منطقة حيوية بمدينة تعز - شارع جمال</p>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="s.jpg" alt="مشروع ">
+                    </div>
+                    <div class="project-info">
+                        <h3> فلة</h3>
+                        <p> فلة تتكون من 2 ادوار مع بدروم وحوش وخزان ارضي </p>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="eqar/uploads/h.png" alt="مشروع ">
+                    </div>
+                    <div class="project-info">
+                        <h3> مبنى بنك الكريمي-الدمنة</h3>
+                        <p>  مبنى يتكون من  2 ادوار وحوش     </p>
+                    </div> 
+                </div>
+
+              
+            </div>
+               <div class="section-title">
+                        <h3>الاعمال  الحكومي </h3>
+                    </div>
+
+                <div class="project-card">
+                    <div class="project-video">
+                        <video controls>
+                            <source src="2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                   
+                </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>تواصل معنا</h2>
+            </div>
+            
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>العنوان</h4>
+                            <p>تعز، الحوبان</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>الهاتف</h4>
+                            <span> 538 218 733</span>
+                            <p>538 218 771  </p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>البريد الإلكتروني</h4>
+                            <a url='abdulrqeebalathwre@gmail.com'>abdulrqeebalathwari@gmail.com</a>
+                         
+                        </div>
+                    </div>
+                 
+                      <div class="map-section">
+            <h3 class="section-title">
+                <i class="fas fa-map-marked-alt"></i> الموقع
+            </h3>
+            
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="map-overlay">
+                    <a href="https://www.openstreetmap.org/copyright" target="_blank"></a>
+                </div>
+            </div>
+        </div>
+    
+                </div>
+               
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>عن الشركة</h3>
+                    <p>مؤسسة عبدالرقيب علي الاثوري للمقاولات العامه والعقارات، مؤسسة رائدة في مجال الإنشاءات والتطوير العقاري، تقدم حلولاً متكاملة بجودة عالية والتزام تام بالمواعيد.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967733218538?text=اهلا"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#about">عن الشركة</a></li>
+                        <li><a href="#services">خدماتنا</a></li>
+                        <li><a href="#projects">أعمالنا السابقة</a></li>
+                        <li><a href="#contact">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>خدماتنا</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">المقاولات العامة</a></li>
+                        <li><a href="#">الإشراف الهندسي</a></li>
+                        <li><a href="#">التطوير العقاري</a></li>
+                        <li><a href="#">إدارة المشاريع</a></li>
+                        <li><a href="#">التثمين العقاري</a></li>
+                        <li><a href="#">الاستشارات الهندسية</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> تعز، الحوبان </li>
+                        <li><i class="fas fa-phone-alt"></i> +967 733218538</li>
+                        <li><i class="fas fa-phone-alt"></i> +967 771218538</li>
+                        <li><i class="fas fa-envelope"></i> abdulrqeebalathwari@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2025 مؤسسة عبدالرقيب علي الاثوري للمقاولات العامه والعقارات</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+      <div >
+        <a href="https://wa.me/967733218538?text=اهلا" class="scroll-top1" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+    <script src="script.js"></script>
+    <script>
+        
+    // تهيئة خريطة OpenStreetMap
+        function initMap() {
+            // إحداثيات المشروع من قاعدة البيانات
+            const projectLocation = ['13.591103','44.044658'];
+            // إنشاء الخريطة
+            const map = L.map('map').setView(projectLocation, 15);
+            // إضافة طبقة OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+            // إنشاء علامة مخصصة
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '',
+                iconSize: [30, 30],
+               
+            });
+            
+            // إضافة علامة على موقع المشروع
+            L.marker(projectLocation, {icon: customIcon}).addTo(map)
+            
+
+                .openPopup();
+            
+            // إضافة دائرة حول الموقع
+            L.circle(projectLocation, {
+                color: '#2A5C82',
+                fillColor: '#2A5C82',
+                fillOpacity: 0.2,
+                radius: 300
+            }).addTo(map);
+            
+            // إضافة مقياس
+            L.control.scale().addTo(map);
+        }
+        
+        // تهيئة الخريطة بعد تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+        
+    </script>
+</body>
+</html>
